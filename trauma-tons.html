@@ -601,18 +601,31 @@ async function startGame(){
 }
 
 async function revealNow(){
-  const q = qsFor(S.hostMeta)[S.hostMeta.qIndex];
+  const meta = S.hostMeta;
+  const q = qsFor(meta)[meta.qIndex];
   const newScores = {...S.hostScores};
+  const awarded = {};
   for(let i=1;i<=4;i++){
     const team = S.hostTeams[i];
-    if(team && team.answers && team.answers[S.hostMeta.qIndex] !== undefined){
-      const ansIdx = LETTERS.indexOf(team.answers[S.hostMeta.qIndex]);
-      if(ansIdx === q.correct){ newScores[i] = (newScores[i]||0) + q.points; }
+    if(team && team.answers && team.answers[meta.qIndex] !== undefined){
+      const ansIdx = LETTERS.indexOf(team.answers[meta.qIndex]);
+      if(ansIdx === q.correct){
+        const answerTime = team.answerTimes && team.answerTimes[meta.qIndex];
+        let ratio = 0;
+        if(typeof answerTime === 'number' && meta.questionStartedAt){
+          const elapsed = answerTime - meta.questionStartedAt;
+          ratio = Math.min(1, Math.max(0, elapsed / (TIME_LIMIT*1000)));
+        }
+        // 100% de los puntos si responde de inmediato, bajando hasta 50% si responde justo al límite de tiempo
+        const pts = Math.round(q.points * (0.5 + 0.5*(1-ratio)));
+        awarded[i] = pts;
+        newScores[i] = (newScores[i]||0) + pts;
+      }
     }
   }
   await sSet('game:'+S.code+':scores', newScores);
   S.hostScores = newScores;
-  const m = {...S.hostMeta, status:'reveal'};
+  const m = {...meta, status:'reveal', awarded: awarded};
   await sSet('game:'+S.code+':meta', m);
   S.hostMeta = m; render();
 }
@@ -723,7 +736,8 @@ function hostQuestionHtml(){
     let resultTxt = "";
     if(meta.status==='reveal' && has){
       const correct = LETTERS.indexOf(team.answers[meta.qIndex]) === q.correct;
-      resultTxt = correct ? '<div class="tstatus" style="color:var(--green);margin-top:2px">✓ Correcto +'+q.points+'</div>' : '<div class="tstatus" style="color:var(--red);margin-top:2px">✗ Incorrecto</div>';
+      const pts = (meta.awarded && meta.awarded[i] !== undefined) ? meta.awarded[i] : q.points;
+      resultTxt = correct ? '<div class="tstatus" style="color:var(--green);margin-top:2px">✓ Correcto +'+pts+'</div>' : '<div class="tstatus" style="color:var(--red);margin-top:2px">✗ Incorrecto</div>';
     }
     let dots = "";
     if(team && team.lifelinesUsed){
@@ -751,7 +765,7 @@ function hostQuestionHtml(){
   '<main><div class="stage"><div class="layout">'+
     '<div><div class="eyebrow">Nivel</div><div class="filmstrip">'+filmstrip+'</div></div>'+
     '<div><div class="card">'+
-      '<div class="qmeta"><div class="points-badge">'+q.points+' pts</div>'+timerHtml+'</div>'+
+      '<div class="qmeta"><div class="points-badge">hasta '+q.points+' pts</div>'+timerHtml+'</div>'+
       '<div class="eyebrow" style="margin-bottom:2px">'+esc(q.tipo)+'</div>'+
       '<div class="qtext display">'+esc(q.text)+'</div>'+
       '<div class="options">'+optionsHtml+'</div>'+
@@ -811,7 +825,10 @@ function startTeamPolling(){
 
 async function submitAnswer(idx){
   S.selectedOpt = idx;
-  const updated = {...S.myTeam, answers:{...(S.myTeam.answers||{}), [S.meta.qIndex]: LETTERS[idx]}};
+  const updated = {...S.myTeam,
+    answers:{...(S.myTeam.answers||{}), [S.meta.qIndex]: LETTERS[idx]},
+    answerTimes:{...(S.myTeam.answerTimes||{}), [S.meta.qIndex]: {".sv":"timestamp"}}
+  };
   await sSet('game:'+S.joinedCode+':team'+S.teamId, updated);
   S.myTeam = updated;
   render();
@@ -943,7 +960,15 @@ function teamQuestionHtml(){
 
   let explainHtml = "";
   if(locked){
-    explainHtml = '<div class="explain-box"><b>Fundamento clínico:</b> '+q.explain+'</div>';
+    const myCorrect = myAnsIdx === q.correct;
+    const myPts = (meta.awarded && meta.awarded[S.teamId] !== undefined) ? meta.awarded[S.teamId] : null;
+    let resultLine = "";
+    if(myCorrect && myPts !== null){
+      resultLine = '<p class="footer-note" style="color:var(--green);font-weight:700;margin-bottom:10px">✓ Correcto — ganaste '+myPts+' pts (mientras más rápido respondas, más puntos ganas)</p>';
+    } else if(hasAnswered && !myCorrect){
+      resultLine = '<p class="footer-note" style="color:var(--red);font-weight:700;margin-bottom:10px">✗ Incorrecto — 0 pts esta ronda</p>';
+    }
+    explainHtml = resultLine + '<div class="explain-box"><b>Fundamento clínico:</b> '+q.explain+'</div>';
   }
 
   const timerHtml = meta.status==='playing' ? '<div class="timer'+(remaining<=10?' low':'')+'">'+remaining+'s</div>' : '';
@@ -951,7 +976,8 @@ function teamQuestionHtml(){
 
   return topBarHtml("Grupo "+S.teamId+" · "+esc(S.myTeam&&S.myTeam.name)+" · "+myScore+" pts") + ekgHtml(meta.status==='playing' && remaining<=10) +
   '<main><div class="stage" style="max-width:640px"><div class="card">'+
-    '<div class="qmeta"><div class="points-badge">Pregunta '+(meta.qIndex+1)+'/'+QS.length+' · '+q.points+' pts</div>'+timerHtml+'</div>'+
+    '<div class="qmeta"><div class="points-badge">Pregunta '+(meta.qIndex+1)+'/'+QS.length+' · hasta '+q.points+' pts</div>'+timerHtml+'</div>'+
+    (meta.status==='playing' ? '<p class="footer-note" style="margin:-4px 0 8px;text-align:left">⚡ Mientras más rápido respondas correcto, más puntos ganas</p>' : '')+
     '<div class="eyebrow" style="margin-bottom:2px">'+esc(q.tipo)+'</div>'+
     '<div class="qtext display">'+esc(q.text)+'</div>'+
     '<div class="options">'+optionsHtml+'</div>'+
