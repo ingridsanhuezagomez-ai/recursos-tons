@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recursos Educativos — Ingrid Sanhueza</title>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f2ee;
+  --surface:#ffffff;
+  --surface2:#f0ece7;
+  --border:#ddd5c8;
+  --text:#2d2a26;
+  --muted:#8a8078;
+  --primary:#5C6E6C;
+  --primary-light:#eaf0ef;
+  --accent:#D2A96A;
+  --accent2:#BB7154;
+  --coral:#D39D87;
+  --aqua:#A6B7AA;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(circle at 10% 20%,rgba(92,110,108,.08) 0%,transparent 50%),
+    radial-gradient(circle at 90% 80%,rgba(210,169,106,.08) 0%,transparent 50%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── HEADER ── */
+header{
+  position:relative;z-index:1;
+  background:var(--surface);
+  border-bottom:2px solid var(--border);
+  box-shadow:0 2px 12px rgba(0,0,0,.05);
+}
+.header-inner{
+  max-width:1100px;margin:0 auto;
+  padding:20px 24px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.header-brand{display:flex;align-items:center;gap:14px}
+.header-logo{
+  width:52px;height:52px;border-radius:16px;
+  background:linear-gradient(135deg,var(--primary),#445958);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;flex-shrink:0;
+}
+.header-title h1{font-family:'Righteous',sans-serif;font-size:20px;letter-spacing:.5px;color:var(--text);line-height:1.1}
+.header-title p{font-size:11px;color:var(--muted);font-weight:700;margin-top:3px;letter-spacing:.3px}
+.header-inacap{
+  background:var(--primary-light);border:2px solid rgba(92,110,108,.2);
+  border-radius:999px;padding:6px 16px;
+  font-size:11px;font-weight:800;color:var(--primary);letter-spacing:.5px;
+}
+
+/* ── HERO / PERFIL ── */
+.hero{
+  position:relative;z-index:1;
+  background:linear-gradient(135deg,var(--primary) 0%,#445958 60%,#3a4d4b 100%);
+  color:#fff;padding:48px 24px;text-align:center;
+  overflow:hidden;
+}
+.hero::before{
+  content:'🦷';font-size:200px;position:absolute;
+  right:-30px;top:-20px;opacity:.06;pointer-events:none;
+}
+.hero::after{
+  content:'🦷';font-size:120px;position:absolute;
+  left:-10px;bottom:-10px;opacity:.06;pointer-events:none;transform:rotate(30deg);
+}
+.hero-avatar{
+  width:90px;height:90px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(255,255,255,.3),rgba(255,255,255,.1));
+  border:3px solid rgba(255,255,255,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:40px;margin:0 auto 16px;
+}
+.hero h2{font-family:'Righteous',sans-serif;font-size:clamp(24px,6vw,38px);letter-spacing:1px;margin-bottom:6px}
+.hero .rol{font-size:14px;opacity:.85;font-weight:700;margin-bottom:4px}
+.hero .inst{font-size:12px;opacity:.65;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.hero-desc{
+  max-width:560px;margin:16px auto 0;
+  font-size:14px;opacity:.8;font-weight:600;line-height:1.6;
+}
+
+/* ── MAIN ── */
+main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:40px 16px 60px}
+
+/* SECCIÓN */
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.section-header h3{font-family:'Righteous',sans-serif;font-size:17px;letter-spacing:.5px;white-space:nowrap}
+.section-line{flex:1;height:2px;background:var(--border);border-radius:999px}
+
+/* ASIGNATURAS GRID */
+.asig-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px;
+  margin-bottom:48px;
+}
+
+/* ASIGNATURA CARD */
+.asig-card{
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:20px;overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,0,0,.04);
+  transition:all .2s;
+}
+.asig-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(0,0,0,.09)}
+
+.asig-banner{
+  padding:20px 20px 16px;
+  display:flex;align-items:flex-start;gap:14px;
+}
+.asig-ico{
+  width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.asig-info h4{font-family:'Righteous',sans-serif;font-size:16px;letter-spacing:.3px;margin-bottom:4px}
+.asig-info p{font-size:12px;color:var(--muted);font-weight:600;line-height:1.4}
+
+.asig-recursos{padding:0 16px 16px;display:flex;flex-direction:column;gap:8px}
+
+/* RECURSO ROW */
+.rec-row{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface2);border:2px solid var(--border);
+  border-radius:12px;padding:10px 14px;
+  text-decoration:none;color:var(--text);
+  transition:all .15s;cursor:pointer;
+}
+.rec-row:hover{border-color:var(--primary);background:var(--primary-light)}
+.rec-row.disabled{opacity:.5;cursor:default}
+.rec-row.disabled:hover{border-color:var(--border);background:var(--surface2)}
+.rec-ico{font-size:20px;flex-shrink:0}
+.rec-info{flex:1;min-width:0}
+.rec-info strong{display:block;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec-info span{font-size:11px;color:var(--muted);font-weight:600}
+.rec-tag{
+  font-size:10px;font-weight:800;letter-spacing:.5px;
+  padding:3px 8px;border-radius:999px;white-space:nowrap;flex-shrink:0;
+}
+.tag-juego{background:#eaf0ef;color:var(--primary)}
+.tag-eval{background:#fdf6ec;color:#B8892A}
+.tag-pronto{background:var(--surface2);color:var(--muted);border:1.5px solid var(--border)}
+
+/* COLORES ASIGNATURAS */
+.color-anatomo .asig-ico{background:#eaf0ef;color:var(--primary)}
+.color-anatomo .asig-info h4{color:var(--primary)}
+.color-anatomo .rec-row:hover{border-color:var(--primary);background:var(--primary-light)}
+
+.color-odontoped .asig-ico{background:#fdf6ec;color:#B8892A}
+.color-odontoped .asig-info h4{color:#B8892A}
+.color-odontoped .rec-row:hover{border-color:#D2A96A;background:#fdf6ec}
+
+.color-rol .asig-ico{background:#f5ede4;color:#BB7154}
+.color-rol .asig-info h4{color:#BB7154}
+.color-rol .rec-row:hover{border-color:#BB7154;background:#f5ede4}
+
+.color-bio .asig-ico{background:#f0ece7;color:#8a7060}
+.color-bio .asig-info h4{color:#8a7060}
+.color-bio .rec-row:hover{border-color:#A6B7AA;background:#f0ece7}
+
+.color-prev .asig-ico{background:#eaf5f0;color:#3a7a5e}
+.color-prev .asig-info h4{color:#3a7a5e}
+.color-prev .rec-row:hover{border-color:#3a7a5e;background:#eaf5f0}
+
+.color-urg .asig-ico{background:#fdecea;color:#c0392b}
+.color-urg .asig-info h4{color:#c0392b}
+.color-urg .rec-row:hover{border-color:#c0392b;background:#fdecea}
+
+/* EMPTY STATE */
+.empty-recursos{
+  text-align:center;padding:16px;
+  font-size:12px;color:var(--muted);font-weight:600;font-style:italic;
+}
+
+/* FOOTER */
+footer{
+  position:relative;z-index:1;
+  background:var(--surface);border-top:2px solid var(--border);
+  padding:24px 16px;text-align:center;
+}
+footer p{font-size:12px;color:var(--muted);font-weight:600;line-height:1.8}
+footer strong{color:var(--primary)}
+
+@media(max-width:480px){
+  .asig-grid{grid-template-columns:1fr}
+  .hero h2{font-size:22px}
+  .header-inacap{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="header-logo">🦷</div>
+      <div class="header-title">
+        <h1>Recursos Educativos Digitales</h1>
+        <p>INACAP Temuco · Técnico en Odontología de Nivel Superior</p>
+      </div>
+    </div>
+    <div class="header-inacap">INACAP · TONS</div>
+  </div>
+</header>
+
+<!-- HERO PERFIL -->
+<div class="hero">
+  <div class="hero-avatar">👩‍⚕️</div>
+  <h2>Ingrid Sanhueza Gómez</h2>
+  <div class="rol">Cirujano Dentista · Docente INACAP</div>
+  <div class="inst">Técnico en Odontología de Nivel Superior · Temuco</div>
+  <p class="hero-desc">Bienvenidos al portal de recursos educativos digitales. Aquí encontrarás herramientas interactivas, juegos y evaluaciones diseñadas para apoyar tu aprendizaje en el programa TONS.</p>
+</div>
+
+<main>
+
+  <div class="section-header">
+    <h3>📚 Asignaturas</h3>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="asig-grid">
+
+    <!-- ANATOMOFISIOLOGÍA -->
+    <div class="asig-card color-anatomo">
+      <div class="asig-banner">
+        <div class="asig-ico">🦷</div>
+        <div class="asig-info">
+          <h4>Anatomofisiología Oral</h4>
+          <p>Nomenclatura dental, anatomía del sistema estomatognático y estructuras orales</p>
+        </div>
+      </div>
+      <div class="asig-recursos">
+        <a class="rec-row" href="bingo.html">
+          <div class="rec-ico">🎲</div>
+          <div class="rec-info">
+            <strong>Bingo Dental FDI</strong>
+            <span>Juego multijugador · Nomenclatura FDI y primaria</span>
+          </div>
+          <div class="rec-tag tag-juego">Juego</div>
+        </a>
+        <a class="rec-row" href="test.html">
+          <div class="rec-ico">📝</div>
+          <div class="rec-info">
+            <strong>Test Nomenclatura</strong>
+            <span>Evaluación FDI · ADA · Nombre completo</span>
+          </div>
+          <div class="rec-tag tag-eval">Evaluación</div>
+        </a>
+        <div class="rec-row disabled">
+          <div class="rec-ico">🗺️</div>
+          <div class="rec-info">
+            <strong>Odontograma Interactivo</strong>
+            <span>Práctica de registro clínico</span>
+          </div>
+          <div class="rec-tag tag-pronto">Pronto</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ODONTOPEDIATRÍA -->
+    <div class="asig-card color-odontoped">
+      <div class="asig-banner">
+        <div class="asig-ico">👶</div>
+        <div class="asig-info">
+          <h4>Odontopediatría</h4>
+          <p>Atención odontológica infantil, dentición primaria y desarrollo dental</p>
+        </div>
+      </div>
+      <div class="asig-recursos">
+        <div class="rec-row disabled">
+          <div class="rec-ico">🎮</div>
+          <div class="rec-info">
+            <strong>Cronología Dental</strong>
+            <span>Erupción y recambio dentario</span>
+          </div>
+          <div class="rec-tag tag-pronto">Pronto</div>
+        </div>
+        <div class="rec-row disabled">
+          <div class="rec-ico">📝</div>
+          <div class="rec-info">
+            <strong>Casos Clínicos Pediátricos</strong>
+            <span>Simulación de atención infantil</span>
+          </div>
+          <div class="rec-tag tag-pronto">Pronto</div>
+        </div>
+        <div class="empty-recursos">✨ Más recursos en desarrollo</div>
+      </div>
+    </div>
+
+    <!-- ROL DEL TÉCNICO -->
+    <div class="asig-card color-rol">
+      <div class="asig-banner">
+        <div class="asig-ico">⚕️</div>
+        <div class="asig-info">
+          <h4>Rol del Técnico en Odontología</h4>
+          <p>Funciones, ética, marco legal y competencias del TONS en Chile</p>
+        </div>
+      </div>
+      <div class="asig-recursos">
+        <div class="rec-row disabled">
+          <div class="rec-ico">📋</div>
+          <div class="rec-info">
+            <strong>Quiz Decreto 90</strong>
+            <span>Marco regulatorio TONS</span>
+          </div>
+          <div class="rec-tag tag-pronto">Pronto</div>
+        </div>
+        <div class="rec-row disabled">
+          <div class="rec-ico">🎯</div>
+          <div class="rec-info">
+            <strong>Casos Éticos</strong>
+            <span>Dilemas clínicos y toma de decisiones</span>
+          </div>
+          <div class="rec-tag tag-pronto">Pronto</div>
+        </div>
+        <div class="empty-recursos">✨ Más recursos en desarrollo</div>
+      </div>
+    </div>
+
+    <!-- BIOMATERIALES -->
+    <div class="asig-card color-bio">
+      <div class="asig-banner">
+        <div class="asig-ico">🧪</div>
+        <div class="asig-info">
+          <h4>Biomateriales Dentales</h4>
+          <p>Propiedades, manipulación y aplicación de materiales en odontología</p>
+        </div>
+      </div>
+      <div class="asig-recursos">
+        <div class="rec-row disabled">
+          <div class="rec-ico">🎲</div>
+          <div class="rec-info">
+            <strong>Bingo de Biomateriales</strong>
+            <span>Identificación de materiales y usos</span>
+          </div>
+          <div class="rec-tag tag-pronto">Pronto</div>
+        </div>
+        <div class="rec-row disabled">
+          <div class="rec-ico">📝</div>
+          <div class="rec-info">
+            <strong>Quiz de Propiedades</strong>
+            <span>Evaluación de materiales dentales</span>
+          </div>
+          <div class="rec-tag tag-pronto">Pronto</div>
+        </div>
+        <div class="empty-recursos">✨ Más recursos en desarrollo</div>
+      </div>
+    </div>
+
+    <!-- PREVENCIÓN -->
+    <div class="asig-card color-prev">
+      <div class="asig-banner">
+        <div class="asig-ico">🪥</div>
+        <div class="asig-info">
+          <h4>Prevención en Salud Oral</h4>
+          <p>Técnicas de higiene, fluoruros, sellantes y programas preventivos</p>
+        </div>
+      </div>
+      <div class="asig-recursos">
+        <div class="rec-row disabled">
+          <div class="rec-ico">🎮</div>
+          <div class="rec-info">
+            <strong>Técnicas de Cepillado</strong>
+            <span>Guía interactiva de higiene oral</span>
+          </div>
+          <div class="rec-tag tag-pronto">Pronto</div>
+        </div>
+        <div class="rec-row disabled">
+          <div class="rec-ico">📊</div>
+          <div class="rec-info">
+            <strong>CEOD / COPD</strong>
+            <span>Calculadora de índices epidemiológicos</span>
+          </div>
+          <div class="rec-tag tag-pronto">Pronto</div>
+        </div>
+        <div class="empty-recursos">✨ Más recursos en desarrollo</div>
+      </div>
+    </div>
+
+    <!-- URGENCIAS -->
+    <div class="asig-card color-urg">
+      <div class="asig-banner">
+        <div class="asig-ico">🚨</div>
+        <div class="asig-info">
+          <h4>Urgencias Odontológicas</h4>
+          <p>Manejo de trauma dentoalveolar, dolor agudo y emergencias en la clínica</p>
+        </div>
+      </div>
+      <div class="asig-recursos">
+        <a class="rec-row" href="trauma-tons.html">
+          <div class="rec-ico">🏆</div>
+          <div class="rec-info">
+            <strong>¿Quién Quiere Ser TONS?</strong>
+            <span>Concurso por grupos · Unidad 1: Trauma Dentoalveolar</span>
+          </div>
+          <div class="rec-tag tag-juego">Juego</div>
+        </a>
+        <div class="rec-row disabled">
+          <div class="rec-ico">📝</div>
+          <div class="rec-info">
+            <strong>Casos Clínicos Urgencia</strong>
+            <span>Simulación de triage y atención</span>
+          </div>
+          <div class="rec-tag tag-pronto">Pronto</div>
+        </div>
+        <div class="empty-recursos">✨ Más recursos en desarrollo</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <p>🦷 <strong>Ingrid Sanhueza Gómez</strong> · Cirujano Dentista · Docente INACAP Temuco</p>
+  <p>Técnico en Odontología de Nivel Superior · Recursos Educativos Digitales · 2025</p>
+</footer>
+
+</body>
+</html>

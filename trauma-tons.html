@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Quién Quiere Ser TONS? — Trauma Dentoalveolar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A1628;
+    --bg2: #0E1F3A;
+    --panel: #10233F;
+    --panel-line: #1D3A5F;
+    --cyan: #6EE7F0;
+    --cyan-dim: rgba(110,231,240,0.16);
+    --amber: #FBBF24;
+    --amber-dim: rgba(251,191,36,0.14);
+    --green: #34D399;
+    --green-dim: rgba(52,211,153,0.16);
+    --red: #F87171;
+    --red-dim: rgba(248,113,113,0.16);
+    --text: #E8F1F5;
+    --muted: #7C93AB;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(110,231,240,0.08), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 110%, rgba(251,191,36,0.06), transparent 60%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  #app{min-height:100vh; display:flex; flex-direction:column;}
+
+  /* --- topbar --- */
+  .topbar{
+    display:flex; align-items:center; gap:10px;
+    padding:14px 20px; border-bottom:1px solid var(--panel-line);
+    background:rgba(10,22,40,0.6); backdrop-filter:blur(6px);
+  }
+  .topbar .cross{
+    width:22px;height:22px; position:relative; flex-shrink:0;
+  }
+  .topbar .cross:before, .topbar .cross:after{
+    content:""; position:absolute; background:var(--amber); border-radius:2px;
+  }
+  .topbar .cross:before{ width:22px; height:6px; top:8px; left:0;}
+  .topbar .cross:after{ width:6px; height:22px; top:0; left:8px;}
+  .topbar h1{font-size:16px; margin:0; letter-spacing:0.3px;}
+  .topbar .sub{color:var(--muted); font-size:12.5px; margin-left:auto; text-align:right;}
+
+  /* --- ekg divider --- */
+  .ekg-wrap{width:100%; height:26px; overflow:hidden; opacity:0.55;}
+  .ekg-wrap svg{width:200%; height:100%; animation:ekgmove 3.2s linear infinite;}
+  @keyframes ekgmove{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  .ekg-wrap.fast svg{animation-duration:1s;}
+  .ekg-wrap.fast path{stroke:var(--red);}
+
+  main{flex:1; display:flex; flex-direction:column; align-items:center; padding:24px 16px 60px; width:100%;}
+  .stage{width:100%; max-width:980px; margin:0 auto;}
+
+  .card{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:14px;
+    padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .center{text-align:center;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:2px;
+    font-size:11px; color:var(--cyan); margin-bottom:10px;
+  }
+  h2.display{font-size:24px; margin:0 0 6px; font-weight:600;}
+  p.lead{color:var(--muted); font-size:14.5px; line-height:1.5; margin:0 0 20px;}
+
+  .btn{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:15px; cursor:pointer;
+    border-radius:10px; border:1px solid var(--panel-line); background:var(--panel);
+    color:var(--text); padding:14px 20px; transition:all .15s ease; width:100%;
+  }
+  .btn:hover{border-color:var(--cyan); background:var(--cyan-dim);}
+  .btn:disabled{opacity:0.35; cursor:not-allowed;}
+  .btn:disabled:hover{border-color:var(--panel-line); background:var(--panel);}
+  .btn.primary{background:var(--cyan); color:#052A2E; border-color:var(--cyan);}
+  .btn.primary:hover{filter:brightness(1.08);}
+  .btn.amber{background:var(--amber); color:#3A2600; border-color:var(--amber);}
+  .btn.ghost{background:transparent;}
+  .btn.wide{width:auto; padding:14px 34px;}
+  .btn-row{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px;}
+
+  input.field, select.field{
+    width:100%; padding:13px 14px; border-radius:10px; border:1px solid var(--panel-line);
+    background:#0B1C33; color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:16px;
+    letter-spacing:1px; outline:none; margin-bottom:12px; text-align:center;
+  }
+  input.field:focus, select.field:focus{border-color:var(--cyan);}
+  label.flabel{display:block; font-size:12px; color:var(--muted); margin:14px 0 6px; text-transform:uppercase; letter-spacing:1px;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr;}}
+  .grid3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;}
+  @media(max-width:820px){.grid3{grid-template-columns:1fr;}}
+
+  /* role picker */
+  .role-card{cursor:pointer; text-align:left;}
+  .role-card h3{margin:10px 0 4px; font-size:17px;}
+  .role-card p{color:var(--muted); font-size:13px; margin:0;}
+  .role-icon{font-size:26px;}
+
+  /* team slots */
+  .slot{
+    display:flex; align-items:center; justify-content:space-between; padding:14px 16px;
+    border:1px solid var(--panel-line); border-radius:10px; margin-bottom:10px; cursor:pointer;
+  }
+  .slot.taken{opacity:0.4; cursor:not-allowed;}
+  .slot.selected{border-color:var(--cyan); background:var(--cyan-dim);}
+  .slot .dot{width:10px;height:10px;border-radius:50%; margin-right:10px; flex-shrink:0;}
+
+  /* lobby team chips */
+  .chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; justify-content:center;}
+  .chip{
+    padding:10px 16px; border-radius:999px; border:1px solid var(--panel-line);
+    font-size:13.5px; font-weight:600; background:#0B1C33;
+  }
+  .chip.on{border-color:var(--green); color:var(--green); background:var(--green-dim);}
+
+  /* code display */
+  .code-box{
+    font-family:'IBM Plex Mono',monospace; font-size:44px; font-weight:600; letter-spacing:10px;
+    background:#0B1C33; border:1px dashed var(--cyan); border-radius:12px; padding:20px;
+    color:var(--cyan); margin:14px 0; text-align:center;
+  }
+
+  /* filmstrip ladder (host) */
+  .layout{display:grid; grid-template-columns:190px 1fr; gap:18px;}
+  @media(max-width:820px){.layout{grid-template-columns:1fr;}}
+  .filmstrip{display:flex; flex-direction:column-reverse; gap:5px;}
+  .frame{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:7px 10px; border-radius:6px; border:1px solid var(--panel-line);
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--muted);
+  }
+  .frame.current{border-color:var(--amber); background:var(--amber-dim); color:var(--amber); font-weight:600;}
+  .frame.done{border-color:var(--green-dim); color:var(--green);}
+
+  /* question header */
+  .qmeta{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .points-badge{
+    font-family:'IBM Plex Mono',monospace; background:var(--amber-dim); color:var(--amber);
+    border:1px solid var(--amber); border-radius:999px; padding:6px 14px; font-size:13px; font-weight:600;
+  }
+  .timer{
+    font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:600; color:var(--cyan);
+    border:1px solid var(--panel-line); border-radius:8px; padding:6px 14px;
+  }
+  .timer.low{color:var(--red); border-color:var(--red);}
+
+  .qtext{font-size:19px; line-height:1.45; margin:6px 0 20px; font-weight:500;}
+
+  .options{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:600px){.options{grid-template-columns:1fr;}}
+  .opt{
+    display:flex; gap:10px; align-items:flex-start; text-align:left; padding:14px 16px;
+    border-radius:10px; border:1px solid var(--panel-line); background:#0B1C33; cursor:pointer;
+    font-size:14.5px; line-height:1.4; transition:all .12s ease;
+  }
+  .opt:hover{border-color:var(--cyan);}
+  .opt.selected{border-color:var(--cyan); background:var(--cyan-dim);}
+  .opt .letter{
+    font-family:'IBM Plex Mono',monospace; font-weight:700; color:var(--cyan);
+    border:1px solid var(--cyan); border-radius:6px; width:26px; height:26px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:13px;
+  }
+  .opt.hidden-lifeline{display:none;}
+  .opt.correct{border-color:var(--green); background:var(--green-dim);}
+  .opt.correct .letter{border-color:var(--green); color:var(--green);}
+  .opt.wrong{border-color:var(--red); background:var(--red-dim);}
+  .opt.wrong .letter{border-color:var(--red); color:var(--red);}
+  .opt.disabled{cursor:default;}
+
+  .lifelines{display:flex; gap:10px; margin-top:18px; flex-wrap:wrap;}
+  .life{
+    flex:1; min-width:140px; padding:11px; border-radius:10px; border:1px solid var(--panel-line);
+    background:#0B1C33; text-align:center; cursor:pointer; font-size:12.5px; font-weight:600;
+  }
+  .life .lemoji{font-size:18px; display:block; margin-bottom:4px;}
+  .life:hover{border-color:var(--amber);}
+  .life.used{opacity:0.3; cursor:not-allowed; text-decoration:line-through;}
+  .life.used:hover{border-color:var(--panel-line);}
+
+  .overlay-box{
+    margin-top:14px; padding:14px 16px; border-radius:10px; border:1px solid var(--amber);
+    background:var(--amber-dim); font-size:13.5px; line-height:1.5;
+  }
+  .overlay-box .otitle{font-weight:700; color:var(--amber); margin-bottom:4px; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;}
+
+  .poll-bar-row{display:flex; align-items:center; gap:8px; margin:6px 0; font-size:12px;}
+  .poll-bar-row .plabel{width:22px; font-family:'IBM Plex Mono',monospace; color:var(--muted);}
+  .poll-bar-track{flex:1; height:10px; background:#0B1C33; border-radius:6px; overflow:hidden;}
+  .poll-bar-fill{height:100%; background:var(--cyan);}
+  .poll-bar-pct{width:34px; text-align:right; font-family:'IBM Plex Mono',monospace; color:var(--muted);}
+
+  /* team monitor panel (host) */
+  .monitor-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:20px;}
+  @media(max-width:640px){.monitor-grid{grid-template-columns:1fr 1fr;}}
+  .monitor{
+    border:1px solid var(--panel-line); border-radius:10px; padding:12px; text-align:center;
+    background:#0B1C33;
+  }
+  .monitor .tname{font-weight:700; font-size:13px; margin-bottom:4px;}
+  .monitor .tstatus{font-size:11.5px; color:var(--muted); font-family:'IBM Plex Mono',monospace;}
+  .monitor.answered{border-color:var(--green);}
+  .monitor.answered .tstatus{color:var(--green);}
+  .monitor .tscore{font-family:'IBM Plex Mono',monospace; font-size:17px; margin-top:6px; color:var(--cyan);}
+  .life-dots{display:flex; gap:4px; justify-content:center; margin-top:6px;}
+  .life-dots span{width:7px;height:7px;border-radius:50%; background:var(--panel-line);}
+  .life-dots span.used{background:var(--red);}
+
+  .explain-box{
+    margin-top:16px; padding:14px 16px; border-radius:10px; border:1px solid var(--panel-line);
+    background:rgba(110,231,240,0.05); font-size:13.5px; line-height:1.55; color:var(--text);
+  }
+  .explain-box b{color:var(--cyan);}
+
+  .podium{display:flex; align-items:flex-end; justify-content:center; gap:14px; margin:26px 0 10px;}
+  .pod-col{text-align:center; width:110px;}
+  .pod-bar{border-radius:10px 10px 0 0; display:flex; align-items:flex-start; justify-content:center; padding-top:10px; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:20px;}
+  .pod-1 .pod-bar{height:150px; background:linear-gradient(180deg,var(--amber),#8A6100); color:#241800;}
+  .pod-2 .pod-bar{height:110px; background:linear-gradient(180deg,#B9C4CF,#5C6B78); color:#0B1C33;}
+  .pod-3 .pod-bar{height:80px; background:linear-gradient(180deg,#C98A5A,#6E4526); color:#241100;}
+  .pod-4 .pod-bar{height:55px; background:#2A4166; color:#B9C9DA;}
+  .pod-name{font-size:12.5px; font-weight:600; margin-top:8px;}
+  .pod-pts{font-size:11.5px; color:var(--muted); font-family:'IBM Plex Mono',monospace;}
+
+  .footer-note{color:var(--muted); font-size:12px; text-align:center; margin-top:18px;}
+  .link-btn{background:none;border:none;color:var(--cyan); text-decoration:underline; cursor:pointer; font-size:13px; font-family:'Inter',sans-serif;}
+  .waiting-pulse{
+    display:inline-block; width:9px;height:9px;border-radius:50%; background:var(--amber);
+    margin-right:8px; animation:pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.25;}}
+  .error-text{color:var(--red); font-size:13px; margin-top:8px; text-align:center;}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ======================= CONTENIDO CLÍNICO ======================= */
+/* Fuente: MINSAL. Guía de Práctica Clínica para el manejo de urgencia de los
+   Traumatismos Dentoalveolares (2023) — clasificación de Andreasen/OMS y
+   recomendaciones GRADE. */
+
+const QUESTION_SETS = {};
+const SET_LABELS = {
+  fracturas: "Parte 1 · Fracturas dentoalveolares",
+  luxaciones: "Parte 2 · Luxaciones dentales",
+  avulsiones: "Parte 3 · Avulsiones"
+};
+function qsFor(meta){
+  const key = (meta && meta.setKey) || 'fracturas';
+  return QUESTION_SETS[key] || QUESTION_SETS.fracturas;
+}
+
+QUESTION_SETS.fracturas = [
+ {level:1, points:100, tipo:"Fractura coronaria no complicada",
+  text:"¿Qué compromete una fractura coronaria NO complicada?",
+  options:["Esmalte y/o dentina, sin exposición pulpar","Esmalte, dentina y pulpa","Solo el cemento radicular","El hueso alveolar de soporte"],
+  correct:0,
+  hint:"El nombre 'no complicada' habla de un tejido que NO debe quedar expuesto.",
+  explain:"Fractura coronaria no complicada: pérdida de esmalte y dentina, <b>sin exposición pulpar</b> (Glosario MINSAL, clasificación de Andreasen/OMS)."},
+ {level:2, points:150, tipo:"Fractura coronaria no complicada",
+  text:"¿Cuál es el manejo de urgencia habitual de una fractura coronaria NO complicada?",
+  options:["Restaurar con resina compuesta, o reponer el fragmento si se recupera y readapta bien","Pulpotomía parcial con hidróxido de calcio","Exodoncia del diente afectado","Ferulización rígida por 4 semanas"],
+  correct:0,
+  hint:"Como no hay pulpa expuesta, el manejo es principalmente restaurador, no endodóntico ni quirúrgico.",
+  explain:"Al no existir exposición pulpar, el manejo de urgencia es conservador: restaurar con resina compuesta o reponer/adherir el fragmento original si está disponible y readapta correctamente."},
+
+ // ===== FRACTURA CORONARIA COMPLICADA =====,
+ {level:3, points:200, tipo:"Fractura coronaria complicada",
+  text:"¿Qué hallazgo clínico permite diferenciar una fractura coronaria COMPLICADA de una no complicada?",
+  options:["Un punto rojo o sangrante visible en el centro de la fractura, con dolor a estímulos","Ausencia total de sintomatología","Movilidad de varios dientes en bloque","Cambio de color de toda la corona a café oscuro"],
+  correct:0,
+  hint:"Busca el signo directo de que la pulpa quedó expuesta al ambiente oral.",
+  explain:"La exposición pulpar se identifica clínicamente como un punto rojo o sangrante en el centro de la línea de fractura, con dolor marcado a estímulos como el aire o el frío."},
+ {level:4, points:250, tipo:"Fractura coronaria complicada",
+  text:"Ante una fractura coronaria COMPLICADA (con exposición pulpar) de un diente PERMANENTE, MINSAL sugiere como manejo de urgencia:",
+  options:["Exodoncia inmediata del diente","Pulpotomía parcial con hidróxido de calcio o biocerámico","Obturación directa sin protección pulpar","Solo control radiográfico, sin intervenir"],
+  correct:1,
+  hint:"Se busca preservar la vitalidad pulpar con un procedimiento conservador de urgencia.",
+  explain:"MINSAL sugiere realizar pulpotomía parcial con hidróxido de calcio o con biocerámico en fractura coronaria complicada de diente permanente (recomendación condicional, certeza baja)."},
+
+ // ===== FRACTURA CORONO-RADICULAR =====,
+ {level:5, points:300, tipo:"Fractura corono-radicular",
+  text:"Una fractura CORONO-RADICULAR compromete, según el glosario MINSAL:",
+  options:["Solo esmalte y dentina, sin llegar a la raíz","Esmalte, dentina y cemento, con o sin exposición pulpar","Únicamente el cemento radicular","Solo el hueso alveolar de soporte"],
+  correct:1,
+  hint:"El nombre indica que involucra tanto la corona como la raíz.",
+  explain:"Fractura corono-radicular: compromete esmalte, dentina y cemento, extendiéndose desde la corona hacia la raíz; puede o no presentar exposición pulpar (Glosario MINSAL)."},
+ {level:6, points:350, tipo:"Fractura corono-radicular",
+  text:"En dentición PRIMARIA, ante una fractura corono-radicular COMPLICADA de un incisivo temporal, MINSAL sugiere:",
+  options:["Exodoncia completa del diente","Exodoncia solo del fragmento móvil, por sobre la exodoncia completa","Ferulización rígida por 4 semanas","Pulpotomía y observación, sin extraer nada"],
+  correct:1,
+  hint:"Se prefiere una conducta conservadora: remover solo lo que está suelto.",
+  explain:"En niños y niñas con fractura corono-radicular complicada de diente primario, MINSAL sugiere exodoncia del fragmento móvil por sobre la exodoncia completa."},
+
+ // ===== FRACTURA RADICULAR =====,
+ {level:7, points:400, tipo:"Fractura radicular",
+  text:"Una fractura RADICULAR intraalveolar compromete, según el glosario MINSAL:",
+  options:["Solo esmalte","Dentina, pulpa y cemento radicular","Únicamente la corona clínica","Solo el hueso alveolar"],
+  correct:1,
+  hint:"Revisa qué tejidos radiculares se mencionan en la definición MINSAL.",
+  explain:"Fractura radicular intraalveolar: afecta la raíz, comprometiendo dentina, pulpa y cemento radicular; puede ser horizontal, oblicua o mixta."},
+ {level:8, points:450, tipo:"Fractura radicular",
+  text:"En una fractura radicular CERVICAL de un incisivo permanente, MINSAL sugiere priorizar:",
+  options:["Exodoncia del fragmento coronario","Estabilizar con férula rígida, por sobre la exodoncia del fragmento","No requiere tratamiento","Extracción completa del diente"],
+  correct:1,
+  hint:"A diferencia de otras fracturas radiculares, aquí se busca conservar el fragmento coronario.",
+  explain:"MINSAL sugiere estabilizar con férula rígida por sobre realizar exodoncia del fragmento coronario en fractura radicular cervical de incisivo permanente."},
+
+ // ===== FRACTURA ALVEOLAR =====,
+ {level:9, points:500, tipo:"Fractura alveolar",
+  text:"¿Cuál es el hallazgo clínico que distingue a una fractura ALVEOLAR de una fractura radicular aislada?",
+  options:["Movilidad de un solo diente, sin afectar a los vecinos","Movilidad de varios dientes en bloque, con alteración de la oclusión","Ausencia completa de movilidad dentaria","Cambio de color en un único diente, sin otros signos"],
+  correct:1,
+  hint:"Piensa en un segmento óseo que se mueve junto, no en un diente aislado.",
+  explain:"En la fractura alveolar se desplaza un segmento óseo completo: varios dientes se mueven en bloque y suele alterarse la oclusión, a diferencia de la movilidad aislada de un solo diente en la fractura radicular."},
+ {level:10, points:600, tipo:"Fractura alveolar",
+  text:"PREGUNTA TONS — El manejo de urgencia de una fractura ALVEOLAR, tanto en dentición temporal como permanente, consiste en:",
+  options:["Exodoncia inmediata de todos los dientes del segmento afectado","Reducir y reposicionar el segmento óseo bajo anestesia, seguido de férula semirrígida por 4 semanas","No requiere ningún tipo de inmovilización","Solo tratamiento antibiótico, sin manejo mecánico"],
+  correct:1,
+  hint:"Se trata de reposicionar un segmento óseo, no solo un diente.",
+  explain:"El manejo de la fractura alveolar consiste en reducir y reposicionar el segmento óseo bajo anestesia, e inmovilizar con una férula semirrígida durante aproximadamente 4 semanas, con reevaluación clínica y radiográfica posterior, tanto en dentición temporal como en permanente."}
+
+];
+
+QUESTION_SETS.luxaciones = [
+ {level:1, points:100, tipo:"Concusión",
+  text:"¿Qué caracteriza a la CONCUSIÓN como lesión del periodonto?",
+  options:["Lesión a las estructuras de soporte, sin movilidad ni desplazamiento, pero con marcada reacción a la percusión","Desplazamiento del diente hacia apical dentro del hueso","Movilidad anormal, sin desplazamiento del diente","Desplazamiento parcial fuera del alvéolo"],
+  correct:0,
+  hint:"Es la lesión periodontal más leve del espectro de luxaciones.",
+  explain:"Concusión: lesión a las estructuras de soporte del diente, sin movilidad ni desplazamiento anormal, pero con marcada reacción a la percusión (Glosario MINSAL)."},
+ {level:2, points:150, tipo:"Concusión",
+  text:"El manejo de urgencia de una concusión, en ausencia de otras lesiones asociadas, es principalmente:",
+  options:["Ferulización rígida por 4 semanas","Exodoncia preventiva","Control clínico y seguimiento, sin tratamiento activo específico","Pulpotomía inmediata"],
+  correct:2,
+  hint:"Es la lesión periodontal más leve; no requiere intervención mecánica.",
+  explain:"La concusión no requiere tratamiento activo específico: se indica control clínico y seguimiento de la vitalidad pulpar en el tiempo."},
+
+ // ===== SUBLUXACIÓN =====,
+ {level:3, points:200, tipo:"Subluxación",
+  text:"La SUBLUXACIÓN se define como una lesión de las estructuras de soporte con:",
+  options:["Movilidad anormal, pero sin desplazamiento del diente","Desplazamiento completo fuera del alvéolo","Desplazamiento apical dentro del hueso alveolar","Desplazamiento en dirección vestibular o palatina"],
+  correct:0,
+  hint:"A diferencia de la concusión, aquí sí hay un signo clínico adicional característico.",
+  explain:"Subluxación: lesión a las estructuras de soporte con movilidad anormal, pero sin desplazamiento del diente (Glosario MINSAL)."},
+ {level:4, points:250, tipo:"Subluxación",
+  text:"En dentición PRIMARIA, ante una subluxación sin riesgo de aspiración, MINSAL sugiere:",
+  options:["Ferulizar siempre por 2 semanas","No ferulizar, por sobre ferulizar","Exodoncia preventiva","Pulpectomía inmediata"],
+  correct:1,
+  hint:"La guía prioriza la conducta menos invasiva cuando no hay riesgo para la vía aérea.",
+  explain:"En niños y niñas con subluxación, luxación lateral o extrusiva de diente primario sin riesgo de aspiración, MINSAL sugiere no ferulizar por sobre ferulizar."},
+
+ // ===== LUXACIÓN LATERAL =====,
+ {level:5, points:300, tipo:"Luxación lateral",
+  text:"La LUXACIÓN LATERAL se define como el desplazamiento del diente en dirección:",
+  options:["Apical, dentro del hueso alveolar","No axial, vestibular o palatina","Coronal, parcialmente fuera del alvéolo","Completa, fuera del alvéolo"],
+  correct:1,
+  hint:"El término 'lateral' indica hacia los lados, no hacia arriba ni abajo.",
+  explain:"Luxación lateral: desplazamiento del diente en dirección no axial, ya sea vestibular o palatina (Glosario MINSAL)."},
+ {level:6, points:350, tipo:"Luxación lateral",
+  text:"En personas con luxación lateral de diente permanente que reciben tratamiento de urgencia tardío (más de 48 horas), MINSAL sugiere:",
+  options:["No intervenir en absoluto","Realizar reposición digital y ferulización, por sobre no intervenir","Exodoncia inmediata","Solo indicar antibióticos"],
+  correct:1,
+  hint:"Aunque el tratamiento sea tardío, la guía prioriza reposicionar y estabilizar sobre no hacer nada.",
+  explain:"MINSAL sugiere realizar reposición digital y ferulización por sobre no intervenir, incluso en luxación lateral/extrusiva con manejo de urgencia tardío (más de 48 horas)."},
+
+ // ===== LUXACIÓN INTRUSIVA =====,
+ {level:7, points:400, tipo:"Luxación intrusiva",
+  text:"La LUXACIÓN INTRUSIVA se define como el desplazamiento del diente en dirección:",
+  options:["Apical, dentro del hueso alveolar","Vestibular","Coronal, fuera del alvéolo","Lateral hacia palatino"],
+  correct:0,
+  hint:"El diente se 'entierra' dentro del hueso.",
+  explain:"Luxación intrusiva: desplazamiento del diente en dirección apical, dentro del hueso alveolar (Glosario MINSAL)."},
+ {level:8, points:450, tipo:"Luxación intrusiva",
+  text:"Clínica y radiográficamente, un diente con luxación intrusiva se caracteriza por:",
+  options:["Verse más largo que sus vecinos, con aumento del espacio del ligamento periodontal","Verse más corto o ausente clínicamente, con el espacio del ligamento periodontal disminuido o ausente en la radiografía","Movilidad exagerada, sin cambios radiográficos","Estar completamente fuera del alvéolo"],
+  correct:1,
+  hint:"Piensa en un diente que se hunde en el hueso: ¿se ve más largo o más corto?",
+  explain:"En la luxación intrusiva el diente se ve más corto o incluso ausente clínicamente, y radiográficamente el espacio del ligamento periodontal está disminuido o ausente por el desplazamiento apical."},
+ {level:9, points:500, tipo:"Luxación extrusiva",
+  text:"La LUXACIÓN EXTRUSIVA se define como el desplazamiento del diente:",
+  options:["Apical, dentro del hueso","Parcial, fuera de su alvéolo","Lateral, hacia vestibular","Completo, con pérdida total del diente"],
+  correct:1,
+  hint:"El diente 'sale' parcialmente de su posición, a diferencia de la avulsión que es completa.",
+  explain:"Luxación extrusiva: desplazamiento parcial del diente fuera de su alvéolo (Glosario MINSAL); se diferencia de la avulsión, que es un desplazamiento completo."},
+ {level:10, points:600, tipo:"Luxación extrusiva",
+  text:"PREGUNTA TONS — En niños con luxación extrusiva de un diente PRIMARIO, con movilidad excesiva y riesgo de aspiración o ingestión, MINSAL recomienda:",
+  options:["Ferulizar de inmediato","Realizar la exodoncia del diente afectado","Control sin intervención","Reposicionar y observar 48 horas"],
+  correct:1,
+  hint:"Es una recomendación de 'buena práctica clínica' pensando en la seguridad de la vía aérea.",
+  explain:"Como buena práctica clínica, en luxación extrusiva de diente primario con excesiva movilidad y riesgo de ingestión/aspiración, se recomienda la exodoncia del diente afectado."}
+
+];
+
+QUESTION_SETS.avulsiones = [
+ {level:1, points:100, tipo:"Avulsión · Definición",
+  text:"¿Cómo se define la AVULSIÓN dentaria?",
+  options:["Desplazamiento completo del diente fuera de su alvéolo","Desplazamiento parcial del diente fuera del alvéolo","Movilidad del diente sin desplazamiento","Desplazamiento apical dentro del hueso"],
+  correct:0,
+  hint:"Es la lesión dental traumática más severa: el diente sale completamente de su lugar.",
+  explain:"Avulsión: desplazamiento completo del diente fuera de su alvéolo (Glosario MINSAL). Es la lesión traumática dentaria más severa."},
+ {level:2, points:150, tipo:"Avulsión · Manejo inmediato",
+  text:"Si un diente PERMANENTE avulsionado no puede reimplantarse de inmediato en el lugar del accidente, ¿en qué medio se recomienda conservarlo mientras se traslada al paciente?",
+  options:["En agua corriente","Envuelto en una servilleta seca","En leche fría, suero fisiológico o la saliva del propio paciente","Al aire libre, sin ningún medio"],
+  correct:2,
+  hint:"El medio debe mantener vivas las células del ligamento periodontal; el agua y el medio seco las dañan.",
+  explain:"Se recomienda conservar el diente avulsionado en un medio húmedo adecuado —leche fría, suero fisiológico o saliva—, evitando el agua o el medio seco, que dañan las células del ligamento periodontal."},
+ {level:3, points:200, tipo:"Avulsión · Dentición permanente",
+  text:"En personas con diente PERMANENTE de ápice cerrado, avulsionado por más de una hora, MINSAL sugiere:",
+  options:["No realizar el reimplante, por el tiempo transcurrido","Realizar el reimplante dental de todas formas","Esperar 24 horas antes de decidir","Reimplantar solo si el paciente es menor de 12 años"],
+  correct:1,
+  hint:"La guía prioriza intentar salvar el diente incluso con reimplante tardío.",
+  explain:"MINSAL sugiere realizar el reimplante dental en personas con diente permanente de ápice cerrado avulsionado por más de una hora, a pesar del reimplante tardío."},
+ {level:4, points:250, tipo:"Avulsión · Dentición permanente",
+  text:"Previo al reimplante de un diente PERMANENTE avulsionado, MINSAL sugiere:",
+  options:["Cepillar y desinfectar intensamente la superficie radicular","No tratar la superficie radicular","Remover completamente el ligamento periodontal remanente","Aplicar ácido cítrico sobre la raíz"],
+  correct:1,
+  hint:"Se busca preservar al máximo las células del ligamento periodontal que aún puedan estar viables.",
+  explain:"MINSAL sugiere no tratar la superficie radicular antes del reimplante de un diente permanente avulsionado, para no dañar las células del ligamento periodontal remanente."},
+ {level:5, points:300, tipo:"Avulsión · Dentición permanente",
+  text:"En personas con avulsión de diente PERMANENTE asociada a trauma, MINSAL sugiere:",
+  options:["No usar antibióticos","Usar antibióticos","Usar antifúngicos","Ningún manejo farmacológico"],
+  correct:1,
+  hint:"A diferencia de otras lesiones dentoalveolares, aquí sí se recomienda su uso.",
+  explain:"MINSAL sugiere el uso de antibióticos en personas con avulsión de diente permanente asociada a trauma, a diferencia de fracturas coronarias, radiculares intraalveolares o luxaciones, donde se sugiere no usarlos."},
+ {level:6, points:350, tipo:"Avulsión · Dentición primaria",
+  text:"Ante la avulsión de un diente PRIMARIO, la conducta recomendada es:",
+  options:["Reimplantarlo siguiendo el mismo protocolo que en dentición permanente","No reimplantarlo, por el riesgo de dañar el germen del diente permanente subyacente","Reimplantarlo solo si el niño tiene menos de 2 años","Reimplantarlo y ferulizar rígidamente por 4 semanas"],
+  correct:1,
+  hint:"Piensa en qué estructura importante podría dañarse al intentar reinsertar el diente temporal.",
+  explain:"En dentición primaria no se recomienda reimplantar el diente avulsionado, ya que la maniobra puede dañar el germen del diente permanente en desarrollo."},
+ {level:7, points:400, tipo:"Avulsión · Dentición primaria",
+  text:"Ante la ausencia clínica de un diente temporal tras un trauma, antes de asumir que se trata de una avulsión se debe:",
+  options:["Indicar antibióticos de inmediato","Tomar una radiografía para descartar una luxación intrusiva total del diente","Ferulizar el espacio edéntulo","Esperar 48 horas sin realizar ningún examen"],
+  correct:1,
+  hint:"Un diente puede 'desaparecer' clínicamente sin haber salido realmente del hueso.",
+  explain:"Un diente temporal intruido por completo puede parecer clínicamente ausente, simulando una avulsión; por eso siempre debe tomarse una radiografía para diferenciar entre avulsión real y luxación intrusiva total."},
+ {level:8, points:450, tipo:"Avulsión · Dentición primaria",
+  text:"Cuando un diente temporal no aparece tras un trauma y la radiografía descarta que esté intruido en el hueso, se debe sospechar y descartar:",
+  options:["Que el diente se encuentra en el estómago o la vía aérea del paciente por deglución o aspiración","Que el diente nunca existió","Que se trata de una fractura coronaria no complicada","Que el niño tiene una anodoncia congénita"],
+  correct:0,
+  hint:"Si el diente no está en el alvéolo ni en boca, ¿dónde más podría haber ido en un niño pequeño?",
+  explain:"Si el diente no se encuentra en boca ni intruido en el hueso, debe descartarse aspiración o deglución del diente, evaluando al paciente en conjunto con el equipo médico si es necesario."},
+ {level:9, points:500, tipo:"Avulsión · Pronóstico",
+  text:"Una complicación frecuente a mediano/largo plazo tras el reimplante de un diente permanente avulsionado es:",
+  options:["Caries dental inmediata","Reabsorción radicular externa o anquilosis","Aumento del tamaño de la corona","Erupción acelerada de los dientes vecinos"],
+  correct:1,
+  hint:"Piensa en lo que le puede pasar a la raíz cuando el ligamento periodontal estuvo dañado o ausente por mucho tiempo.",
+  explain:"Tras el reimplante son complicaciones esperables la reabsorción radicular externa y la anquilosis (fusión del diente al hueso), especialmente cuando el diente permaneció seco por tiempo prolongado; por eso requiere seguimiento clínico y radiográfico periódico."},
+ {level:10, points:600, tipo:"Avulsión · Síntesis",
+  text:"PREGUNTA TONS — La diferencia MÁS importante en el manejo de urgencia de la avulsión entre dentición primaria y permanente es que:",
+  options:["En primaria se reimplanta de urgencia y en permanente nunca se reimplanta","En permanente se busca reimplantar el diente (incluso con reimplante tardío), mientras que en primaria NO se reimplanta, por riesgo para el germen permanente","No existe ninguna diferencia en el manejo entre ambas denticiones","En ambas denticiones el único tratamiento es la exodoncia de los dientes vecinos"],
+  correct:1,
+  hint:"Piensa en qué estructura biológica está en juego únicamente cuando el diente afectado es temporal.",
+  explain:"En dentición permanente el objetivo es reimplantar el diente avulsionado —incluso de forma tardía—, mientras que en dentición primaria no se reimplanta, para evitar dañar el germen del diente permanente en desarrollo; esta es la diferencia central en el manejo de la avulsión según la dentición."}
+
+];
+
+const TIME_LIMIT = 30;
+const LETTERS = ["A","B","C","D"];
+const TEAM_COLORS = {1:"#6EE7F0", 2:"#FBBF24", 3:"#34D399", 4:"#F87171"};
+const CODEWORDS = ["FRAC","MOLA","INCI","APEX","PULP","RAIZ","CORO","URGE"];
+const POLL_MS = 1300;
+
+/* ======================= ESTADO GLOBAL ======================= */
+let S = {
+  role: null,
+  code: null,
+  hostMeta: null, hostScores: null, hostTeams: {1:null,2:null,3:null,4:null},
+  inputCode: "", joinedCode: null, teamId: null, teamNameInput: "",
+  takenSlots: {}, error: "",
+  meta: null, scores: null, teams: {}, myTeam: null,
+  selectedOpt: null, hiddenOpts: [], pollShown: false, hintShown: false, pollVals: null,
+  lastQKey: null,
+  pollId: null
+};
+
+/* ======================= UTILIDADES ======================= */
+const FIREBASE_URL = "https://quien-quiere-ser-tons-default-rtdb.firebaseio.com";
+
+function esc(str){
+  if(str===undefined || str===null) return "";
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function fbPath(key){
+  return "/" + key.split(':').join('/') + ".json";
+}
+async function sGet(key){
+  try{
+    const res = await fetch(FIREBASE_URL + fbPath(key));
+    if(!res.ok) return null;
+    const data = await res.json();
+    return data === null ? null : data;
+  } catch(e){ return null; }
+}
+async function sSet(key, val){
+  try{
+    const res = await fetch(FIREBASE_URL + fbPath(key), {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(val)
+    });
+    return res.ok;
+  } catch(e){ return false; }
+}
+function genCode(){
+  const w = CODEWORDS[Math.floor(Math.random()*CODEWORDS.length)];
+  const n = String(Math.floor(Math.random()*90)+10);
+  return w+n;
+}
+function clearPoll(){ if(S.pollId){ clearInterval(S.pollId); S.pollId=null; } }
+
+function ekgHtml(fast){
+  return '<div class="ekg-wrap'+(fast?' fast':'')+'"><svg viewBox="0 0 400 26" preserveAspectRatio="none">'+
+    '<path d="M0,13 L60,13 L75,13 L85,2 L95,24 L105,13 L120,13 L200,13 L215,13 L225,2 L235,24 L245,13 L260,13 L400,13 L460,13 L475,13 L485,2 L495,24 L505,13 L520,13 L600,13 L615,13 L625,2 L635,24 L645,13 L660,13 L800,13" fill="none" stroke="#6EE7F0" stroke-width="1.5"/></svg></div>';
+}
+function topBarHtml(subtitle){
+  return '<div class="topbar"><div class="cross"></div><h1 class="display">¿Quién Quiere Ser TONS?</h1><div class="sub">'+esc(subtitle)+'</div></div>';
+}
+
+/* ======================= RENDER RAÍZ ======================= */
+function render(){
+  const app = document.getElementById('app');
+  let html = "";
+  if(!S.role) html = screenRoleSelect();
+  else if(S.role === 'host') html = renderHost();
+  else if(S.role === 'team') html = renderTeam();
+  app.innerHTML = html;
+  bindInputs();
+  if(S.role === 'host' && S.hostMeta && S.hostMeta.status === 'lobby'){
+    setTimeout(drawLobbyQR, 0);
+  }
+}
+
+function bindInputs(){
+  document.querySelectorAll('[data-bind]').forEach(el=>{
+    el.addEventListener('input', e=>{ S[el.dataset.bind] = e.target.value; });
+    el.addEventListener('keydown', e=>{
+      if(e.key === 'Enter' && el.dataset.enter){ window[el.dataset.enter](); }
+    });
+  });
+}
+
+function goHome(){
+  clearPoll();
+  S = {role:null, code:null, hostMeta:null, hostScores:null, hostTeams:{1:null,2:null,3:null,4:null},
+    inputCode:"", joinedCode:null, teamId:null, teamNameInput:"", takenSlots:{}, error:"",
+    meta:null, scores:null, teams:{}, myTeam:null, selectedOpt:null, hiddenOpts:[],
+    pollShown:false, hintShown:false, pollVals:null, lastQKey:null, pollId:null};
+  render();
+}
+function pickRole(role){ S.role = role; render(); }
+
+/* ======================= SELECCIÓN DE ROL ======================= */
+function screenRoleSelect(){
+  return topBarHtml("Unidad 1 · Trauma Dentoalveolar") + ekgHtml(false) +
+  '<main><div class="stage" style="max-width:640px">'+
+    '<div class="eyebrow center">TOUI04 · Urgencias e Integración de Especialidades Odontológicas</div>'+
+    '<h2 class="display center">Unidad 1 · Trauma Dentoalveolar</h2>'+
+    '<p class="lead center">Juego de competencia por grupos, estilo concurso, sobre clínica, hallazgos radiográficos y tratamiento en dentición temporal y permanente.</p>'+
+    '<div class="grid2">'+
+      '<div class="card role-card" onclick="pickRole(\'host\')"><div class="role-icon">🖥️</div><h3 class="display">Pantalla del docente</h3><p>Proyecta la partida, controla el ritmo del juego y muestra el marcador de los 4 grupos.</p></div>'+
+      '<div class="card role-card" onclick="pickRole(\'team\')"><div class="role-icon">📱</div><h3 class="display">Soy un grupo</h3><p>Ingresa el código de la partida desde el dispositivo de tu grupo (1 dispositivo por grupo).</p></div>'+
+    '</div>'+
+    '<p class="footer-note" style="margin-top:26px">Ingrid Sanhueza Gómez · Cirujano Dentista</p>'+
+  '</div></main>';
+}
+
+/* ======================= FLUJO DOCENTE ======================= */
+async function createGame(setKey){
+  const c = genCode();
+  const m = {status:'lobby', qIndex:-1, questionStartedAt:null, setKey: setKey};
+  const sc = {1:0,2:0,3:0,4:0};
+  await sSet('game:'+c+':meta', m);
+  await sSet('game:'+c+':scores', sc);
+  S.code = c; S.hostMeta = m; S.hostScores = sc;
+  startHostPolling();
+  render();
+}
+
+function startHostPolling(){
+  clearPoll();
+  async function poll(){
+    const m = await sGet('game:'+S.code+':meta');
+    const sc = await sGet('game:'+S.code+':scores');
+    const t = {};
+    for(let i=1;i<=4;i++){ t[i] = await sGet('game:'+S.code+':team'+i); }
+    if(m) S.hostMeta = m;
+    if(sc) S.hostScores = sc;
+    S.hostTeams = t;
+    render();
+  }
+  poll();
+  S.pollId = setInterval(poll, POLL_MS);
+}
+
+async function startGame(){
+  const m = {status:'playing', qIndex:0, questionStartedAt: Date.now()};
+  await sSet('game:'+S.code+':meta', m);
+  S.hostMeta = m; render();
+}
+
+async function revealNow(){
+  const q = qsFor(S.hostMeta)[S.hostMeta.qIndex];
+  const newScores = {...S.hostScores};
+  for(let i=1;i<=4;i++){
+    const team = S.hostTeams[i];
+    if(team && team.answers && team.answers[S.hostMeta.qIndex] !== undefined){
+      const ansIdx = LETTERS.indexOf(team.answers[S.hostMeta.qIndex]);
+      if(ansIdx === q.correct){ newScores[i] = (newScores[i]||0) + q.points; }
+    }
+  }
+  await sSet('game:'+S.code+':scores', newScores);
+  S.hostScores = newScores;
+  const m = {...S.hostMeta, status:'reveal'};
+  await sSet('game:'+S.code+':meta', m);
+  S.hostMeta = m; render();
+}
+
+async function nextQuestion(){
+  const nextIdx = S.hostMeta.qIndex + 1;
+  let m;
+  if(nextIdx >= qsFor(S.hostMeta).length){ m = {...S.hostMeta, status:'finished'}; }
+  else{ m = {status:'playing', qIndex: nextIdx, questionStartedAt: Date.now(), setKey: S.hostMeta.setKey}; }
+  await sSet('game:'+S.code+':meta', m);
+  S.hostMeta = m; render();
+}
+
+function renderHost(){
+  if(!S.code){
+    return topBarHtml("Pantalla del docente") + ekgHtml(false) +
+    '<main><div class="stage" style="max-width:760px"><div class="card center">'+
+      '<div class="eyebrow">Nueva partida</div><h2 class="display">Elige el contenido a jugar</h2>'+
+      '<p class="lead">Se generará un código para que los 4 grupos se conecten desde sus dispositivos.</p>'+
+      '<div class="grid3">'+
+        '<div class="card role-card" onclick="createGame(\'fracturas\')" style="text-align:center">'+
+          '<div class="role-icon">🦷</div><h3 class="display" style="font-size:15.5px">Parte 1</h3>'+
+          '<p style="margin-top:2px">Fracturas dentoalveolares<br>(coronaria, corono-radicular, radicular, alveolar)</p>'+
+        '</div>'+
+        '<div class="card role-card" onclick="createGame(\'luxaciones\')" style="text-align:center">'+
+          '<div class="role-icon">🩹</div><h3 class="display" style="font-size:15.5px">Parte 2</h3>'+
+          '<p style="margin-top:2px">Luxaciones dentales<br>(concusión, subluxación, lateral, intrusiva, extrusiva)</p>'+
+        '</div>'+
+        '<div class="card role-card" onclick="createGame(\'avulsiones\')" style="text-align:center">'+
+          '<div class="role-icon">🚨</div><h3 class="display" style="font-size:15.5px">Parte 3</h3>'+
+          '<p style="margin-top:2px">Avulsiones<br>(dentición primaria y permanente)</p>'+
+        '</div>'+
+      '</div>'+
+      '<div style="margin-top:14px"><button class="link-btn" onclick="goHome()">← volver</button></div>'+
+    '</div></div></main>';
+  }
+  if(!S.hostMeta) return screenLoading();
+  if(S.hostMeta.status === 'lobby') return hostLobbyHtml();
+  if(S.hostMeta.status === 'playing' || S.hostMeta.status === 'reveal') return hostQuestionHtml();
+  if(S.hostMeta.status === 'finished') return finishedHtml(S.hostTeams, S.hostScores, true, null);
+  return screenLoading();
+}
+
+function hostLobbyHtml(){
+  const joinedCount = [1,2,3,4].filter(i=> S.hostTeams[i] && S.hostTeams[i].joined).length;
+  let chips = "";
+  for(let i=1;i<=4;i++){
+    const t = S.hostTeams[i];
+    const on = t && t.joined;
+    chips += '<div class="chip'+(on?' on':'')+'">Grupo '+i+(on? ' · '+esc(t.name||"sin nombre")+' ✓' : ' · esperando...')+'</div>';
+  }
+  return topBarHtml("Sala "+S.code) + ekgHtml(false) +
+  '<main><div class="stage" style="max-width:640px"><div class="card center">'+
+    '<div class="eyebrow">'+(SET_LABELS[S.hostMeta.setKey]||"")+' · Código de partida</div>'+
+    '<div class="code-box">'+S.code+'</div>'+
+    '<p class="lead">Cada grupo ingresa este código desde su dispositivo, o escanea el QR para entrar directo.</p>'+
+    '<div id="qrbox" style="display:flex;justify-content:center;margin:10px 0 4px"></div>'+
+    '<p class="footer-note" style="margin-top:0">Escanea con la cámara del celular de cada grupo</p>'+
+    '<div class="chips">'+chips+'</div>'+
+    '<div style="margin-top:22px"><button class="btn primary wide" '+(joinedCount===0?'disabled':'')+' onclick="startGame()">Iniciar partida'+(joinedCount>0? ' ('+joinedCount+'/4 grupos)':'')+'</button></div>'+
+    '<p class="footer-note">Puedes iniciar aunque no estén los 4 grupos conectados.</p>'+
+  '</div></div></main>';
+}
+
+function drawLobbyQR(){
+  const box = document.getElementById('qrbox');
+  if(!box || !window.QRCode) return;
+  box.innerHTML = "";
+  const base = window.location.href.split('?')[0].split('#')[0];
+  const joinUrl = base + '?code=' + S.code + '&role=team';
+  new QRCode(box, {text: joinUrl, width:150, height:150, colorDark:"#0A1628", colorLight:"#E8F1F5"});
+}
+
+function hostQuestionHtml(){
+  const meta = S.hostMeta, QS = qsFor(meta), q = QS[meta.qIndex];
+  let remaining = TIME_LIMIT;
+  if(meta.status==='playing'){ remaining = Math.max(0, TIME_LIMIT - Math.floor((Date.now()-meta.questionStartedAt)/1000)); }
+  const answeredCount = [1,2,3,4].filter(i=> S.hostTeams[i] && S.hostTeams[i].answers && S.hostTeams[i].answers[meta.qIndex] !== undefined).length;
+
+  let filmstrip = "";
+  QS.forEach((qq,idx)=>{
+    const cls = idx===meta.qIndex ? ' current' : (idx<meta.qIndex ? ' done' : '');
+    filmstrip += '<div class="frame'+cls+'"><span>N'+(idx+1)+'</span><span>'+qq.points+'</span></div>';
+  });
+
+  let optionsHtml = "";
+  q.options.forEach((opt,idx)=>{
+    let cls = "opt disabled";
+    if(meta.status==='reveal' && idx===q.correct) cls += " correct";
+    optionsHtml += '<div class="'+cls+'"><div class="letter">'+LETTERS[idx]+'</div><div>'+esc(opt)+'</div></div>';
+  });
+
+  let explainHtml = "";
+  if(meta.status==='reveal'){
+    explainHtml = '<div class="explain-box"><b>Fundamento clínico:</b> '+q.explain+'</div>';
+  }
+
+  let monitors = "";
+  for(let i=1;i<=4;i++){
+    const team = S.hostTeams[i];
+    const has = team && team.answers && team.answers[meta.qIndex] !== undefined;
+    let statusTxt = "Sin conectar", cls = "monitor", borderStyle = "";
+    if(team && team.joined){
+      statusTxt = has ? "Respondió ✓" : "Pensando…";
+      if(has) cls += " answered";
+      borderStyle = 'style="border-color:'+TEAM_COLORS[i]+'"';
+    }
+    let resultTxt = "";
+    if(meta.status==='reveal' && has){
+      const correct = LETTERS.indexOf(team.answers[meta.qIndex]) === q.correct;
+      resultTxt = correct ? '<div class="tstatus" style="color:var(--green);margin-top:2px">✓ Correcto +'+q.points+'</div>' : '<div class="tstatus" style="color:var(--red);margin-top:2px">✗ Incorrecto</div>';
+    }
+    let dots = "";
+    if(team && team.lifelinesUsed){
+      dots = '<div class="life-dots"><span class="'+(team.lifelinesUsed.fifty?'used':'')+'"></span><span class="'+(team.lifelinesUsed.publicHelp?'used':'')+'"></span><span class="'+(team.lifelinesUsed.call?'used':'')+'"></span></div>';
+    }
+    monitors += '<div class="'+cls+'" '+borderStyle+'>'+
+      '<div class="tname" style="color:'+TEAM_COLORS[i]+'">'+esc(team&&team.name ? team.name : "Grupo "+i)+'</div>'+
+      '<div class="tstatus">'+statusTxt+'</div>'+resultTxt+
+      '<div class="tscore">'+((S.hostScores&&S.hostScores[i])||0)+'</div>'+dots+
+    '</div>';
+  }
+
+  let actionBtn = "";
+  if(meta.status==='playing'){
+    actionBtn = '<button class="btn amber wide" onclick="revealNow()">Cerrar respuestas y revelar ('+answeredCount+'/4 respondieron)</button>';
+  } else {
+    actionBtn = '<button class="btn primary wide" onclick="nextQuestion()">'+(meta.qIndex+1 >= QS.length ? "Ver resultados finales" : "Siguiente pregunta →")+'</button>';
+  }
+
+  const timerHtml = meta.status==='playing'
+    ? '<div class="timer'+(remaining<=10?' low':'')+'">'+remaining+'s</div>'
+    : '<div class="timer">Revelado</div>';
+
+  return topBarHtml("Sala "+S.code+" · "+(SET_LABELS[meta.setKey]||"")+" · Pregunta "+(meta.qIndex+1)+" de "+QS.length) + ekgHtml(meta.status==='playing' && remaining<=10) +
+  '<main><div class="stage"><div class="layout">'+
+    '<div><div class="eyebrow">Nivel</div><div class="filmstrip">'+filmstrip+'</div></div>'+
+    '<div><div class="card">'+
+      '<div class="qmeta"><div class="points-badge">'+q.points+' pts</div>'+timerHtml+'</div>'+
+      '<div class="eyebrow" style="margin-bottom:2px">'+esc(q.tipo)+'</div>'+
+      '<div class="qtext display">'+esc(q.text)+'</div>'+
+      '<div class="options">'+optionsHtml+'</div>'+
+      explainHtml+
+      '<div class="monitor-grid">'+monitors+'</div>'+
+      '<div class="btn-row" style="margin-top:20px">'+actionBtn+'</div>'+
+    '</div></div>'+
+  '</div></div></main>';
+}
+
+/* ======================= FLUJO GRUPO ======================= */
+async function checkCode(){
+  S.error = "";
+  const codeVal = (S.inputCode||"").toUpperCase().trim();
+  const m = await sGet('game:'+codeVal+':meta');
+  if(!m){ S.error = "No se encontró una partida con ese código."; render(); return; }
+  const t = {};
+  for(let i=1;i<=4;i++){ t[i] = await sGet('game:'+codeVal+':team'+i); }
+  S.takenSlots = t;
+  S.joinedCode = codeVal;
+  render();
+}
+
+async function joinTeam(id){
+  if(!(S.teamNameInput||"").trim()){ S.error = "Escribe un nombre para tu grupo."; render(); return; }
+  const team = {name: S.teamNameInput.trim(), joined:true, lifelinesUsed:{fifty:false, publicHelp:false, call:false}, answers:{}};
+  await sSet('game:'+S.joinedCode+':team'+id, team);
+  S.teamId = id; S.myTeam = team;
+  startTeamPolling();
+  render();
+}
+
+function startTeamPolling(){
+  clearPoll();
+  async function poll(){
+    const m = await sGet('game:'+S.joinedCode+':meta');
+    const sc = await sGet('game:'+S.joinedCode+':scores');
+    const mt = await sGet('game:'+S.joinedCode+':team'+S.teamId);
+    const others = {};
+    for(let i=1;i<=4;i++){ others[i] = await sGet('game:'+S.joinedCode+':team'+i); }
+    if(m){
+      const qKey = m.qIndex+':'+m.status;
+      if(S.lastQKey !== qKey){
+        S.selectedOpt = null; S.hiddenOpts = []; S.pollShown = false; S.hintShown = false; S.pollVals = null;
+        S.lastQKey = qKey;
+      }
+      S.meta = m;
+    }
+    if(sc) S.scores = sc;
+    if(mt) S.myTeam = mt;
+    S.teams = others;
+    render();
+  }
+  poll();
+  S.pollId = setInterval(poll, POLL_MS);
+}
+
+async function submitAnswer(idx){
+  S.selectedOpt = idx;
+  const updated = {...S.myTeam, answers:{...(S.myTeam.answers||{}), [S.meta.qIndex]: LETTERS[idx]}};
+  await sSet('game:'+S.joinedCode+':team'+S.teamId, updated);
+  S.myTeam = updated;
+  render();
+}
+
+async function useLifeline(type){
+  if(S.myTeam.lifelinesUsed[type]) return;
+  const q = qsFor(S.meta)[S.meta.qIndex];
+  if(type === 'fifty'){
+    const wrongIdxs = [0,1,2,3].filter(i=>i!==q.correct);
+    const shuffled = wrongIdxs.sort(()=>Math.random()-0.5);
+    S.hiddenOpts = shuffled.slice(0,2);
+  } else if(type === 'publicHelp'){
+    S.pollShown = true;
+    S.pollVals = computePoll(q.correct);
+  } else if(type === 'call'){
+    S.hintShown = true;
+  }
+  const updated = {...S.myTeam, lifelinesUsed:{...S.myTeam.lifelinesUsed, [type]:true}};
+  await sSet('game:'+S.joinedCode+':team'+S.teamId, updated);
+  S.myTeam = updated;
+  render();
+}
+
+function computePoll(correctIdx){
+  let vals = [0,0,0,0];
+  let remaining = 100;
+  vals[correctIdx] = 42 + Math.floor(Math.random()*20);
+  remaining -= vals[correctIdx];
+  const others = [0,1,2,3].filter(i=>i!==correctIdx);
+  others.forEach((idx,k)=>{
+    if(k === others.length-1){ vals[idx] = remaining; }
+    else{ const v = Math.floor(Math.random()*Math.max(1,(remaining-(others.length-1-k)))); vals[idx]=v; remaining-=v; }
+  });
+  return vals;
+}
+
+function renderTeam(){
+  if(!S.joinedCode){
+    return topBarHtml("Ingreso de grupo") + ekgHtml(false) +
+    '<main><div class="stage" style="max-width:440px"><div class="card center">'+
+      '<div class="eyebrow">Unirse a una partida</div><h2 class="display">Código de la sala</h2>'+
+      '<input class="field" placeholder="EJ: FRAC07" data-bind="inputCode" data-enter="checkCode" value="'+esc(S.inputCode)+'">'+
+      '<button class="btn primary wide" onclick="checkCode()">Continuar</button>'+
+      (S.error? '<div class="error-text">'+esc(S.error)+'</div>':'')+
+      '<div style="margin-top:14px"><button class="link-btn" onclick="goHome()">← volver</button></div>'+
+    '</div></div></main>';
+  }
+  if(!S.teamId){
+    let slots = "";
+    for(let i=1;i<=4;i++){
+      const t = S.takenSlots[i];
+      const taken = t && t.joined;
+      slots += '<div class="slot'+(taken?' taken':'')+'" onclick="'+(taken?'':'joinTeam('+i+')')+'">'+
+        '<div style="display:flex;align-items:center"><div class="dot" style="background:'+TEAM_COLORS[i]+'"></div><span>Grupo '+i+'</span></div>'+
+        '<span style="color:var(--muted);font-size:12.5px">'+(taken? esc(t.name)+' ✓' : 'disponible')+'</span>'+
+      '</div>';
+    }
+    return topBarHtml("Sala "+S.joinedCode) + ekgHtml(false) +
+    '<main><div class="stage" style="max-width:440px"><div class="card">'+
+      '<div class="eyebrow center">Elige tu grupo</div>'+
+      '<label class="flabel">Nombre del grupo</label>'+
+      '<input class="field" placeholder="Ej: Los Ápices" data-bind="teamNameInput" value="'+esc(S.teamNameInput)+'">'+
+      slots+
+      (S.error? '<div class="error-text">'+esc(S.error)+'</div>':'')+
+    '</div></div></main>';
+  }
+  if(!S.meta) return screenLoading();
+  if(S.meta.status === 'lobby'){
+    return topBarHtml("Grupo "+S.teamId+" · "+esc(S.myTeam&&S.myTeam.name)) + ekgHtml(false) +
+    '<main><div class="stage" style="max-width:440px"><div class="card center">'+
+      '<div class="waiting-pulse"></div>'+
+      '<p class="lead" style="margin-top:10px">Conectado como <b style="color:'+TEAM_COLORS[S.teamId]+'">'+esc(S.myTeam&&S.myTeam.name)+'</b>. Esperando a que el docente inicie la partida…</p>'+
+    '</div></div></main>';
+  }
+  if(S.meta.status === 'finished'){
+    return finishedHtml(S.teams, S.scores, false, S.teamId);
+  }
+  return teamQuestionHtml();
+}
+
+function teamQuestionHtml(){
+  const meta = S.meta, QS = qsFor(meta), q = QS[meta.qIndex];
+  const hasAnswered = S.myTeam && S.myTeam.answers && S.myTeam.answers[meta.qIndex] !== undefined;
+  const myAnsIdx = hasAnswered ? LETTERS.indexOf(S.myTeam.answers[meta.qIndex]) : null;
+  const locked = meta.status === 'reveal';
+  let remaining = TIME_LIMIT;
+  if(meta.status==='playing'){ remaining = Math.max(0, TIME_LIMIT - Math.floor((Date.now()-meta.questionStartedAt)/1000)); }
+
+  let optionsHtml = "";
+  q.options.forEach((opt,idx)=>{
+    if(S.hiddenOpts.includes(idx) && !locked){ optionsHtml += '<div class="opt hidden-lifeline"></div>'; return; }
+    let cls = "opt";
+    if(locked){
+      cls += " disabled";
+      if(idx===q.correct) cls += " correct";
+      else if(idx===myAnsIdx) cls += " wrong";
+    } else if(idx===S.selectedOpt || idx===myAnsIdx){ cls += " selected"; }
+    optionsHtml += '<div class="'+cls+'" onclick="'+(locked?'':'submitAnswer('+idx+')')+'"><div class="letter">'+LETTERS[idx]+'</div><div>'+esc(opt)+'</div></div>';
+  });
+
+  let lifelinesHtml = "";
+  if(!locked){
+    lifelinesHtml = '<div class="lifelines">'+
+      '<div class="life'+(S.myTeam.lifelinesUsed.fifty?' used':'')+'" onclick="useLifeline(\'fifty\')"><span class="lemoji">✂️</span>50 / 50</div>'+
+      '<div class="life'+(S.myTeam.lifelinesUsed.publicHelp?' used':'')+'" onclick="useLifeline(\'publicHelp\')"><span class="lemoji">📊</span>Consulta a la clínica</div>'+
+      '<div class="life'+(S.myTeam.lifelinesUsed.call?' used':'')+'" onclick="useLifeline(\'call\')"><span class="lemoji">📞</span>Interconsulta</div>'+
+    '</div>';
+  }
+
+  let pollHtml = "";
+  if(S.pollShown && !locked && S.pollVals){
+    let bars = "";
+    q.options.forEach((o,idx)=>{
+      bars += '<div class="poll-bar-row"><div class="plabel">'+LETTERS[idx]+'</div><div class="poll-bar-track"><div class="poll-bar-fill" style="width:'+S.pollVals[idx]+'%"></div></div><div class="poll-bar-pct">'+S.pollVals[idx]+'%</div></div>';
+    });
+    pollHtml = '<div class="overlay-box"><div class="otitle">Resultado de la consulta a la clínica</div>'+bars+'</div>';
+  }
+
+  let hintHtml = "";
+  if(S.hintShown && !locked){
+    hintHtml = '<div class="overlay-box"><div class="otitle">Interconsulta con el experto</div>'+esc(q.hint)+'</div>';
+  }
+
+  let waitingHtml = "";
+  if(hasAnswered && !locked){
+    waitingHtml = '<p class="footer-note"><span class="waiting-pulse"></span>Respuesta enviada. Puedes cambiarla hasta que el docente cierre la pregunta.</p>';
+  }
+
+  let explainHtml = "";
+  if(locked){
+    explainHtml = '<div class="explain-box"><b>Fundamento clínico:</b> '+q.explain+'</div>';
+  }
+
+  const timerHtml = meta.status==='playing' ? '<div class="timer'+(remaining<=10?' low':'')+'">'+remaining+'s</div>' : '';
+  const myScore = (S.scores && S.scores[S.teamId]) || 0;
+
+  return topBarHtml("Grupo "+S.teamId+" · "+esc(S.myTeam&&S.myTeam.name)+" · "+myScore+" pts") + ekgHtml(meta.status==='playing' && remaining<=10) +
+  '<main><div class="stage" style="max-width:640px"><div class="card">'+
+    '<div class="qmeta"><div class="points-badge">Pregunta '+(meta.qIndex+1)+'/'+QS.length+' · '+q.points+' pts</div>'+timerHtml+'</div>'+
+    '<div class="eyebrow" style="margin-bottom:2px">'+esc(q.tipo)+'</div>'+
+    '<div class="qtext display">'+esc(q.text)+'</div>'+
+    '<div class="options">'+optionsHtml+'</div>'+
+    lifelinesHtml + pollHtml + hintHtml + waitingHtml + explainHtml+
+  '</div></div></main>';
+}
+
+/* ======================= COMUNES ======================= */
+function screenLoading(){
+  return topBarHtml("") + ekgHtml(false) + '<main><div class="stage center" style="max-width:400px"><p class="lead">Cargando…</p></div></main>';
+}
+
+function finishedHtml(teams, scores, isHost, myId){
+  const ranking = [1,2,3,4]
+    .map(i => ({id:i, name: teams[i]&&teams[i].name ? teams[i].name : "Grupo "+i, joined: teams[i]&&teams[i].joined, score: scores? (scores[i]||0) : 0}))
+    .filter(t=>t.joined)
+    .sort((a,b)=>b.score-a.score);
+  const order = [1,0,2,3];
+  const podClasses = ["pod-2","pod-1","pod-3","pod-4"];
+  let podium = "";
+  order.forEach((rankIdx,i)=>{
+    const t = ranking[rankIdx];
+    if(!t){ podium += '<div class="pod-col"></div>'; return; }
+    podium += '<div class="pod-col '+podClasses[i]+'"><div class="pod-bar">'+(rankIdx+1)+'</div>'+
+      '<div class="pod-name" style="color:'+TEAM_COLORS[t.id]+'">'+esc(t.name)+(isHost===false && t.id===myId ? ' (tú)':'')+'</div>'+
+      '<div class="pod-pts">'+t.score+' pts</div></div>';
+  });
+  return topBarHtml("Resultados finales") + ekgHtml(false) +
+  '<main><div class="stage" style="max-width:640px"><div class="card center">'+
+    '<div class="eyebrow">Trauma dentoalveolar · Fracturas</div><h2 class="display">¡Partida terminada!</h2>'+
+    '<div class="podium">'+podium+'</div>'+
+    '<div class="footer-note" style="margin-top:20px">Revisen en conjunto las respuestas y el fundamento clínico de cada pregunta antes de continuar con el siguiente tema.</div>'+
+    '<div style="margin-top:16px"><button class="link-btn" onclick="goHome()">← salir de la partida</button></div>'+
+  '</div></div></main>';
+}
+
+/* ======================= AUTO-INGRESO DESDE QR ======================= */
+(function initFromUrl(){
+  const params = new URLSearchParams(window.location.search);
+  const codeParam = params.get('code');
+  const roleParam = params.get('role');
+  if(codeParam && roleParam === 'team'){
+    S.role = 'team';
+    S.inputCode = codeParam.toUpperCase().trim();
+  }
+})();
+
+render();
+if(S.role === 'team' && S.inputCode && !S.joinedCode){
+  checkCode();
+}
+</script>
+</body>
+</html>
