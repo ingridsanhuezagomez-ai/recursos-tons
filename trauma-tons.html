@@ -687,7 +687,7 @@ function hostLobbyHtml(){
     '<div class="eyebrow">'+(SET_LABELS[S.hostMeta.setKey]||"")+' · Código de partida</div>'+
     '<div class="code-box">'+S.code+'</div>'+
     '<p class="lead">Cada grupo ingresa este código desde su dispositivo, o escanea el QR para entrar directo.</p>'+
-    '<div id="qrbox" style="display:flex;justify-content:center;margin:10px 0 4px"></div>'+
+    '<div id="qrbox" style="display:flex;justify-content:center;margin:14px 0 6px;background:#ffffff;padding:18px;border-radius:14px;width:fit-content;margin-left:auto;margin-right:auto"></div>'+
     '<p class="footer-note" style="margin-top:0">Escanea con la cámara del celular de cada grupo</p>'+
     '<div class="chips">'+chips+'</div>'+
     '<div style="margin-top:22px"><button class="btn primary wide" '+(joinedCount===0?'disabled':'')+' onclick="startGame()">Iniciar partida'+(joinedCount>0? ' ('+joinedCount+'/4 grupos)':'')+'</button></div>'+
@@ -701,7 +701,7 @@ function drawLobbyQR(){
   box.innerHTML = "";
   const base = window.location.href.split('?')[0].split('#')[0];
   const joinUrl = base + '?code=' + S.code + '&role=team';
-  new QRCode(box, {text: joinUrl, width:150, height:150, colorDark:"#0A1628", colorLight:"#E8F1F5"});
+  new QRCode(box, {text: joinUrl, width:220, height:220, colorDark:"#0A1628", colorLight:"#ffffff", correctLevel: QRCode.CorrectLevel.M});
 }
 
 function hostQuestionHtml(){
